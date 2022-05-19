@@ -1,0 +1,119 @@
+jquery  根据单选框的value来选中
+$(":radio[name='userFrozen'][value='"+ userFrozen +"']").prop("checked","checked")
+
+分页：
+        <div class="panel">
+            <div class="panel-body" style="padding: 0;">
+                <div class="col-sm-12" style="padding: 0;text-align: center;">
+                    <ul class="pager" style="margin-top: 10px;margin-bottom: 10px;">
+                        <li class="previous" onclick="getNewData(1)">
+                            <a href="javascript:void(0)"><i class="icon-step-backward"></i></a>
+                        </li>
+
+                        <#if userPage.pageNumber lte 1>
+                            <li class="previous disabled">
+                                <a href="javascript:void(0)"><i class="icon-chevron-left"></i></a>
+                            </li>
+                        <#else>
+                            <li class="previous" onclick="getNewData('${userPage.pageNumber-1}')">
+                                <a href="javascript:void(0)"><i class="icon-chevron-left"></i></a>
+                            </li>
+                        </#if>
+                        <li>
+                            <a href="javascript:void(0)" class="btn">
+                                ${userPage.pageNumber}页/共${userPage.totalPage}</a>
+                        </li>
+                        <#if userPage.pageNumber gte userPage.totalPage>
+                            <li class="next disabled">
+                                <a href="javascript:void(0)"><i class="icon-chevron-right"></i></a>
+                            </li>
+                        <#else>
+                            <li class="next" onclick="getNewData('${userPage.pageNumber+1}')">
+                                <a href="javascript:void(0)"><i class="icon-chevron-right"></i></a>
+                            </li>
+                        </#if>
+                        <li class="previous" onclick="getNewData('${userPage.totalPage}')">
+                            <a href="javascript:void(0)"><i class="icon-step-forward"></i></a>
+                        </li>
+
+
+                        <li class="next">
+                            <a href="javascript:void(0)">
+                                <input type="number" id="renderPageNumber" maxlength="5"
+                                       style="width:50px;height: 20px;" oninput="value=value.replace(/[^\d]/g,'')">
+                            </a>
+                        </li>
+                        <li class="next">
+                            <a href="javascript:void(0)" onclick="renderPage()"
+                               style="padding-left: 2px;padding-right: 2px;">
+                                跳转
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+js代码:
+function getNewData(pageNumber) {
+        if (!checkNotNull(pageNumber)) {
+            pageNumber = 1;
+        }
+        window.location.href = "/hzh/user/list?pageNumber=" + pageNumber + "<#if (userName?? && userName?length>0)>&userName=${userName!}</#if>";
+    }
+
+    function renderPage() {
+        let renderPageNumber = $("#renderPageNumber").val();
+        if (!checkNotNull(renderPageNumber)) {
+            zuiMsg("请输入跳转的页码！");
+            return;
+        }
+        let totalPage = '${userPage.totalPage}';
+        if (parseInt(renderPageNumber) > parseInt(totalPage)) {
+            renderPageNumber = totalPage;
+        }
+        getNewData(renderPageNumber);
+    }
+
+
+
+2 复选框取值
+$("input[name='userFrozen']:checked").val();
+
+3 时间选择插件
+css,js 引入
+
+<link href="//cdn.bootcdn.net/ajax/libs/smalot-bootstrap-datetimepicker/2.4.4/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<script src="//cdn.bootcdn.net/ajax/libs/smalot-bootstrap-datetimepicker/2.4.4/js/bootstrap-datetimepicker.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/smalot-bootstrap-datetimepicker/2.4.4/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+input 框框
+<input type="text" name="adBeginTime" placeholder="开始时间" id="adBeginTime" class="form-control form-datetime" readonly="readonly">
+
+
+function adUpdate(adId, adTypeId, adTitle, adImgUrlFile, adLinkUrl, adSort, adBeginTime, adEndTime) {
+        $("#adId").val(adId);
+        $('#adAdTypeId option[value="' + adTypeId + '"]').prop("selected", "selected");
+        $("#adTitle").val(adTitle);
+        $("#adImgUrlFile").val(adImgUrlFile);
+        $("#adLinkUrl").val(adLinkUrl);
+        $("#adSort").val(adSort);
+        $("#adBeginTime").val(adBeginTime);
+        $("#adEndTime").val(adEndTime);
+    }
+
+
+    $(".form-datetime").datetimepicker(
+        {
+            language: 'zh-CN',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+            showMeridian: 1,
+            format: "yyyy-mm-dd hh:ii:ss"
+        });
+
+
